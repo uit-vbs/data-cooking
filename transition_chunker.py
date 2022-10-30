@@ -51,14 +51,13 @@ def process(file):
 
     for transition in transitions:
         transition_length = transition['frame_end'] - transition['frame_start'] + 1
-        if current_length > 0 and current_length + transition_length > MIN_FRAMES_PER_TRANSITION:
+        if transition_length < MIN_FRAMES_PER_TRANSITION:
             add_transition(
-                current_transitions[0]['video_id'],
-                current_transitions[0]['frame_start'],
-                current_transitions[-1]['frame_end'],
+                transition['video_id'],
+                transition['frame_start'],
+                transition['frame_end'],
             )
-            current_transitions = []
-            current_length = 0
+            continue
         current_transitions.append(transition)
         current_length += transition_length
         if current_length > MIN_FRAMES_PER_TRANSITION:

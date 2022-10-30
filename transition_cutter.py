@@ -69,5 +69,5 @@ if __name__ == '__main__':
         })
     list_jobs.sort(key=lambda x: x['vid_path'])
 
-    with Pool(16) as pool:
+    with Pool(4) as pool:
         results = list(tqdm.tqdm(pool.imap(split_transitions, list_jobs), total=len(list_jobs)))

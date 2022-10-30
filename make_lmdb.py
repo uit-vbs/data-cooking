@@ -16,7 +16,9 @@ logging.basicConfig()
 metadata_path = sys.argv[1]
 features_dir = sys.argv[2]
 out_dir = sys.argv[3]
+os.makedirs(out_dir, exist_ok=True)
 shutil.rmtree(out_dir)
+os.makedirs(out_dir, exist_ok=True)
 
 df_metadata = pd.read_csv(metadata_path)
 
@@ -26,7 +28,8 @@ job_list = []
 def process(job):
     file_path = job['file_path']
     frames = job['frames']
-    features = list(np.load(file_path).get('feature_lst')[:, 0, 0, :])
+    features = np.load(file_path).get('feature_lst')
+    features = features.reshape(features.shape[0], -1, features.shape[-1])[:, 0, :]
     if features.shape[0] != len(frames):
         logger.warning(f"Inconsistent features count ({features.shape[0]} != {len(frames)}): {file_path}")
     env = lmdb.open(out_dir, map_size=10**11)
